@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OPERATION ROOTFINDER</title>
+    <style>
+        /* Pastel Blue Terminal Interface Styles */
+        body {
+            background-color: #E0F7FA; /* Light pastel blue background */
+            color: #00796B; /* Dark teal for text */
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .terminal-border {
+            border: 3px solid #80DEEA; /* Pastel blue border */
+            padding: 2rem;
+            background: #FFFFFF; /* White background */
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(128, 222, 234, 0.5); /* Soft blue shadow */
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(128, 222, 234, 0.5); }
+            to { box-shadow: 0 0 30px rgba(128, 222, 234, 0.8); }
+        }
+        .header-display {
+            border-bottom: 2px solid #80DEEA; /* Pastel blue border */
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .status-line {
+            color: #00796B; /* Dark teal for text */
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+        h2 {
+            color: #00796B; /* Dark teal for text */
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.5em;
+            text-transform: uppercase;
+        }
+        input, button, table {
+            background: #E0F7FA !important; /* Light pastel blue background */
+            border: 1px solid #80DEEA !important; /* Pastel blue border */
+            color: #00796B !important; /* Dark teal for text */
+        }
+        button {
+            background: linear-gradient(45deg, #80DEEA, #4DD0E1) !important; /* Gradient pastel blue */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #4DD0E1, #26C6DA) !important; /* Darker gradient on hover */
+        }
+        th {
+            background: #B2EBF2 !important; /* Light pastel blue for table headers */
+            text-transform: uppercase;
+        }
+        .alert {
+            color: #D32F2F !important; /* Red for alerts */
+            border: 1px solid #D32F2F !important;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            margin: 10px 0;
+            background: #FFEBEE !important; /* Light red background */
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #80DEEA; /* Pastel blue border */
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input[type="number"], input[type="text"] {
+            padding: 8px;
+            margin: 0 10px;
+            width: 150px;
+            background: #E0F7FA !important; /* Light pastel blue background */
+            border: 1px solid #80DEEA; /* Pastel blue border */
+            color: #00796B; /* Dark teal for text */
+        }
+        .function-input {
+            width: 100%;
+            max-width: 400px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #00796B; /* Dark teal for text */
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-border">
+        <div class="header-display">
+            <div class="status-line">CPE (202) <span id="live-clock">19:47:27</span></div>
+            <h2>COMMAND AND CONQUER: ROOT ACQUISITION</h2>
+            <div class="status-line">OPERATION ROOTFINDER</div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <div class="status-line">SELECT FUNCTION:</div>
+                <input type="text" name="function" 
+                    class="function-input"
+                    value="{{ user_function }}" 
+                    placeholder="3x³-15x²-20x+50"
+                    required>
+                <div class="status-line" style="font-size: 0.8em;">
+                    NOTE: Auto-operator insertion active (3x → 3*x)
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="status-line">TARGET GRID COORDINATES:</div>
+                <input type="number" step="any" name="a" 
+                    placeholder="LOWER LIMIT" required>
+                <input type="number" step="any" name="b" 
+                    placeholder="UPPER LIMIT" required>
+                
+                <div class="status-line" style="margin-top: 10px;">ITERATIONS:</div>
+                <input type="number" name="iterations" 
+                    min="1" value="5" required>
+            </div>
+            
+            <button type="submit">INITIATE SCAN</button>
+        </form>
+
+        {% if error_message %}
+            <div class="alert">
+                ██████ SYSTEM ALERT: {{ error_message }}
+            </div>
+        {% endif %}
+
+        {% if result %}
+            <div class="status-line" style="margin-top: 20px;">
+                TACTICAL ANALYSIS REPORT:
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Iteration</th>
+                        <th>X<sub>i</sub></th>
+                        <th>X<sub>j</sub></th>
+                        <th>X<sub>r</sub></th>
+                        <th>f(X<sub>i</sub>)</th>
+                        <th>f(X<sub>r</sub>)</th>
+                        <th>ε<sub>a</sub> (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in result %}
+                    <tr>
+                        <td>{{ entry.iteration }}</td>
+                        <td>{{ entry.a|floatformat:4 }}</td>
+                        <td>{{ entry.b|floatformat:4 }}</td>
+                        <td>{{ entry.c|floatformat:4 }}</td>
+                        <td>{{ entry.f_x_i|floatformat:4 }}</td>
+                        <td>{{ entry.f_c|floatformat:4 }}</td>
+                        <td>
+                            {% if entry.iteration > 1 %}
+                                {{ entry.error_percent|floatformat:2 }}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <div class="footer">
+            © 2023 STRATEGIC COMPUTING DIVISION. ALL RIGHTS SECURED.
+        </div>
+    </div>
+
+    <script>
+        // Live Combat Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = 
+                `${now.getHours().toString().padStart(2,'0')}:` +
+                `${now.getMinutes().toString().padStart(2,'0')}:` +
+                `${now.getSeconds().toString().padStart(2,'0')}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
