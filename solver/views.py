@@ -6,6 +6,9 @@ def bisection_method(request):
     result = None
     error_message = None
     user_function = ''
+    a = None
+    b = None
+    iterations = None
 
     if request.method == 'POST':
         try:
@@ -70,5 +73,8 @@ def bisection_method(request):
     return render(request, 'bisection/index.html', {
         'result': result,
         'error_message': error_message,
-        'user_function': user_function
+        'user_function': user_function,
+        'a': a,  # Pass the value of a back to the template
+        'b': b,  # Pass the value of b back to the template
+        'iterations': iterations  # Pass the value of iterations back to the template
     })

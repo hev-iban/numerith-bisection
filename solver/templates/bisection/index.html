@@ -1,12 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPERATION ROOTFINDER</title>
     <style>
-        /* Pastel Blue Terminal Interface Styles */
+        /* Define CSS variables for light mode */
+        :root {
+            --background-color: #E0F7FA; /* Soft pastel blue */
+            --text-color: #00796B; /* Dark teal */
+            --border-color: #80DEEA; /* Pastel blue */
+            --table-header-bg: #B2EBF2; /* Light pastel blue */
+            --button-bg: linear-gradient(45deg, #80DEEA, #4DD0E1); /* Gradient pastel blue */
+            --button-hover-bg: linear-gradient(45deg, #4DD0E1, #26C6DA); /* Darker gradient */
+            --alert-bg: #FFEBEE; /* Light red */
+            --alert-text: #D32F2F; /* Dark red */
+            --glow-color: rgba(128, 222, 234, 0.5); /* Glow effect */
+        }
+
+        /* Dark Blue Theme */
+        [data-theme="dark"] {
+            --background-color: #0A192F; /* Dark navy blue */
+            --text-color: #CCD6F6; /* Light blue-gray */
+            --border-color: #64FFDA; /* Bright teal */
+            --table-header-bg: #112240; /* Darker navy blue */
+            --button-bg: linear-gradient(45deg, #64FFDA, #00BFA5); /* Teal gradient */
+            --button-hover-bg: linear-gradient(45deg, #00BFA5, #009688); /* Darker teal gradient */
+            --alert-bg: #1F1F2F; /* Dark blue with a hint of purple */
+            --alert-text: #FF6B6B; /* Soft red */
+            --glow-color: rgba(100, 255, 218, 0.5); /* Glow effect for dark mode */
+        }
+
         body {
-            background-color: #E0F7FA; /* Light pastel blue background */
-            color: #00796B; /* Dark teal for text */
+            background-color: var(--background-color);
+            color: var(--text-color);
             font-family: 'Courier New', monospace;
             margin: 0;
             padding: 1rem;
@@ -14,118 +41,205 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
         }
+
         .terminal-border {
-            border: 3px solid #80DEEA; /* Pastel blue border */
+            border: 6px solid var(--border-color);
             padding: 2rem;
-            background: #FFFFFF; /* White background */
-            max-width: 800px;
+            background: var(--background-color);
+            max-width: 900px;
             width: 100%;
-            box-shadow: 0 0 20px rgba(128, 222, 234, 0.5); /* Soft blue shadow */
+            box-shadow: 0 0 20px var(--glow-color);
+            border-radius: 10px;
             animation: glow 2s infinite alternate;
         }
+
         @keyframes glow {
-            from { box-shadow: 0 0 20px rgba(128, 222, 234, 0.5); }
-            to { box-shadow: 0 0 30px rgba(128, 222, 234, 0.8); }
+            0% {
+                box-shadow: 0 0 10px var(--glow-color);
+            }
+            100% {
+                box-shadow: 0 0 20px var(--glow-color);
+            }
         }
+
         .header-display {
-            border-bottom: 2px solid #80DEEA; /* Pastel blue border */
-            padding: 10px 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
             margin-bottom: 20px;
-        }
-        .status-line {
-            color: #00796B; /* Dark teal for text */
-            font-size: 0.9em;
-            letter-spacing: 1px;
-        }
-        h2 {
-            color: #00796B; /* Dark teal for text */
             text-align: center;
+        }
+
+        h2 {
+            color: var(--text-color);
             margin: 10px 0;
             font-size: 1.5em;
             text-transform: uppercase;
+            animation: typewriter 2s steps(20) 1s 1 normal both;
         }
-        input, button, table {
-            background: #E0F7FA !important; /* Light pastel blue background */
-            border: 1px solid #80DEEA !important; /* Pastel blue border */
-            color: #00796B !important; /* Dark teal for text */
+
+        @keyframes typewriter {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
         }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            background: transparent;
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: var(--button-hover-bg);
+            outline: none;
+        }
+
         button {
-            background: linear-gradient(45deg, #80DEEA, #4DD0E1) !important; /* Gradient pastel blue */
+            background: var(--button-bg);
+            color: white;
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding: 10px 20px;
+            padding: 10px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
         }
+
         button:hover {
-            background: linear-gradient(45deg, #4DD0E1, #26C6DA) !important; /* Darker gradient on hover */
+            background: var(--button-hover-bg);
+            transform: scale(1.05);
         }
-        th {
-            background: #B2EBF2 !important; /* Light pastel blue for table headers */
-            text-transform: uppercase;
-        }
+
         .alert {
-            color: #D32F2F !important; /* Red for alerts */
-            border: 1px solid #D32F2F !important;
-            font-family: 'Courier New', monospace;
+            color: var(--alert-text);
+            border: 1px solid var(--alert-text);
             padding: 10px;
             margin: 10px 0;
-            background: #FFEBEE !important; /* Light red background */
-            animation: blink 1s infinite;
+            background: var(--alert-bg);
+            border-radius: 5px;
+            animation: shake 0.5s ease-in-out;
         }
-        @keyframes blink {
-            50% { opacity: 0.5; }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
+
         th, td {
             padding: 12px;
             text-align: center;
-            border: 1px solid #80DEEA; /* Pastel blue border */
+            border: 1px solid var(--border-color);
         }
-        .input-group {
-            margin: 20px 0;
+
+        th {
+            background: var(--table-header-bg);
+            text-transform: uppercase;
         }
-        input[type="number"], input[type="text"] {
-            padding: 8px;
-            margin: 0 10px;
-            width: 150px;
-            background: #E0F7FA !important; /* Light pastel blue background */
-            border: 1px solid #80DEEA; /* Pastel blue border */
-            color: #00796B; /* Dark teal for text */
-        }
-        .function-input {
-            width: 100%;
-            max-width: 400px;
-        }
+
         .footer {
             text-align: center;
             margin-top: 20px;
             font-size: 0.8em;
-            color: #00796B; /* Dark teal for text */
+            color: var(--text-color);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle::before {
+            content: '🌙';
+            font-size: 1.2em;
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            content: '☀️';
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
     <div class="terminal-border">
         <div class="header-display">
-            <div class="status-line">CPE (202) <span id="live-clock">19:47:27</span></div>
             <h2>COMMAND AND CONQUER: ROOT ACQUISITION</h2>
             <div class="status-line">OPERATION ROOTFINDER</div>
+            <div class="status-line">CPE (202) <span id="live-clock">19:47:27</span></div>
         </div>
 
         <form method="POST">
             {% csrf_token %}
             <div class="input-group">
-                <div class="status-line">SELECT FUNCTION:</div>
-                <input type="text" name="function" 
-                    class="function-input"
+                <label for="function">SELECT FUNCTION:</label>
+                <input type="text" id="function" name="function" 
+                    class=" function-input"
                     value="{{ user_function }}" 
-                    placeholder="3x³-15x²-20x+50"
+                    placeholder="3x³-15x²-20x+50" 
                     required>
                 <div class="status-line" style="font-size: 0.8em;">
                     NOTE: Auto-operator insertion active (3x → 3*x)
@@ -133,18 +247,21 @@
             </div>
             
             <div class="input-group">
-                <div class="status-line">TARGET GRID COORDINATES:</div>
-                <input type="number" step="any" name="a" 
-                    placeholder="LOWER LIMIT" required>
-                <input type="number" step="any" name="b" 
-                    placeholder="UPPER LIMIT" required>
-                
-                <div class="status-line" style="margin-top: 10px;">ITERATIONS:</div>
-                <input type="number" name="iterations" 
-                    min="1" value="5" required>
+                <label for="a">TARGET GRID COORDINATES (a):</label>
+                <input type="number" id="a" step="any" name="a" 
+                       value="{{ a }}" required>
+                <label for="b">TARGET GRID COORDINATES (b):</label>
+                <input type="number" id="b" step="any" name="b" 
+                       value="{{ b }}" required>
             </div>
             
-            <button type="submit">INITIATE SCAN</button>
+            <div class="input-group">
+                <label for="iterations">ITERATIONS:</label>
+                <input type="number" id="iterations" name="iterations" 
+                       value="{{ iterations }}" required>
+            </div>
+            
+            <button type="submit">CALCULATE</button>
         </form>
 
         {% if error_message %}
@@ -192,7 +309,7 @@
         {% endif %}
 
         <div class="footer">
-            © 2023 STRATEGIC COMPUTING DIVISION. ALL RIGHTS SECURED.
+            © Espinosa, Ivan Dwyane S. (CPE-202)
         </div>
     </div>
 
@@ -207,6 +324,25 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Check for saved theme in localStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
     </script>
 </body>
 </html>
+
